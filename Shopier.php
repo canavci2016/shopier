@@ -1,4 +1,5 @@
-	class Shopier
+<?php
+class Shopier
 	{
 		private $payment_url = 'https://www.shopier.com/ShowProduct/api_pay4.php';
 		private
