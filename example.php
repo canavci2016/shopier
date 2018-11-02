@@ -1,5 +1,6 @@
 <?php
 
+ 	include 'Shopier.php';
 	$shopier = new Shopier(API_KEY, API_SECRET);
 	$shopier->setBuyer([
 		'id' => 23,
