@@ -6,7 +6,7 @@ Shopier api kullanımı example.php dosyasında anlatılmıştır.
 	$shopier = new Shopier(API_KEY, API_SECRET);
 	$shopier->setBuyer([
 		'id' => 23,
-		'first_name' => 'can', 'last_name' => 'avci', 'email' => 'canavci2016@gmail.com', 'phone' => '5342342312']);
+		'first_name' => 'can', 'last_name' => 'avci', 'email' => 'test@testmail.com', 'phone' => '5342342312']);
 	$shopier->setOrderBilling([
 		'billing_address' => 'Kartaltepeme Mah',
 		'billing_city' => 'istanbul',
