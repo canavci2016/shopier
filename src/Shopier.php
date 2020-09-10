@@ -7,6 +7,7 @@ class Shopier
     private $payment_url = 'https://www.shopier.com/ShowProduct/api_pay4.php';
     private $api_key, $api_secret, $module_version, $buyer = [], $currency = 'TRY';
     private $billingAddress;
+    private $shippingAdress;
 
     public function getBillingAddress(): BillingAddress
     {
@@ -16,6 +17,16 @@ class Shopier
     public function setBillingAddress(BillingAddress $billingAddress)
     {
         $this->billingAddress = $billingAddress;
+    }
+
+    public function getShippingAdress(): ShippingAddress
+    {
+        return $this->shippingAdress;
+    }
+
+    public function setShippingAdress(ShippingAddress $shippingAdress)
+    {
+        $this->shippingAdress = $shippingAdress;
     }
 
     public function __construct($api_key, $api_secret, $module_version = ('1.0.4'))
@@ -28,11 +39,6 @@ class Shopier
     public function setBuyer(array $fields = [])
     {
         $this->buyerValidateAndLoad($this->buyerFields(), $fields);
-    }
-
-    public function setOrderShipping(array $fields = [])
-    {
-        $this->buyerValidateAndLoad($this->orderShippingFields(), $fields);
     }
 
     private function buyerValidateAndLoad($validationFields, $fields)
@@ -56,13 +62,8 @@ class Shopier
             throw new \Exception(implode(',', array_keys($diff)) . ' fields are required use "setBuyer()" method ');
 
 
-        $diff = array_diff_key($this->orderShippingFields(), $this->buyer);
-
-        if (count($diff) > 0)
-            throw new \Exception(implode(',', array_keys($diff)) . ' fields are required use "setOrderShipping()" method ');
-
-
         $billingAddress = $this->getBillingAddress();
+        $shippingAddress = $this->getShippingAdress();
 
         $args = array(
             'API_key' => $this->api_key,
@@ -80,10 +81,10 @@ class Shopier
             'billing_city' => $billingAddress->getCity(),
             'billing_country' => $billingAddress->getCountry(),
             'billing_postcode' => $billingAddress->getPostcode(),
-            'shipping_address' => $this->buyer['shipping_address'],
-            'shipping_city' => $this->buyer['shipping_city'],
-            'shipping_country' => $this->buyer['shipping_country'],
-            'shipping_postcode' => $this->buyer['shipping_postcode'],
+            'shipping_address' => $shippingAddress->getAddress(),
+            'shipping_city' => $shippingAddress->getCity(),
+            'shipping_country' => $shippingAddress->getCountry(),
+            'shipping_postcode' => $shippingAddress->getPostcode(),
             'total_order_value' => $order_total,
             'currency' => $this->getCurrency(),
             'platform' => 0,
@@ -210,26 +211,6 @@ class Shopier
             'last_name' => true,
             'email' => true,
             'phone' => true,
-        ];
-    }
-
-    private function orderBillingFields()
-    {
-        return [
-            'billing_address' => true,
-            'billing_city' => true,
-            'billing_country' => true,
-            'billing_postcode' => true,
-        ];
-    }
-
-    private function orderShippingFields()
-    {
-        return [
-            'shipping_address' => true,
-            'shipping_city' => true,
-            'shipping_country' => true,
-            'shipping_postcode' => true,
         ];
     }
 

@@ -1,10 +1,8 @@
 <?php
 
-
 namespace CanAvci\Shopier;
 
-
-class BillingAddress extends Address
+class ShippingAddress extends Address
 {
 
 }
