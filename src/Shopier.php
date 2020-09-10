@@ -6,6 +6,17 @@ class Shopier
 {
     private $payment_url = 'https://www.shopier.com/ShowProduct/api_pay4.php';
     private $api_key, $api_secret, $module_version, $buyer = [], $currency = 'TRY';
+    private $billingAddress;
+
+    public function getBillingAddress(): BillingAddress
+    {
+        return $this->billingAddress;
+    }
+
+    public function setBillingAddress(BillingAddress $billingAddress)
+    {
+        $this->billingAddress = $billingAddress;
+    }
 
     public function __construct($api_key, $api_secret, $module_version = ('1.0.4'))
     {
@@ -17,11 +28,6 @@ class Shopier
     public function setBuyer(array $fields = [])
     {
         $this->buyerValidateAndLoad($this->buyerFields(), $fields);
-    }
-
-    public function setOrderBilling(array $fields = [])
-    {
-        $this->buyerValidateAndLoad($this->orderBillingFields(), $fields);
     }
 
     public function setOrderShipping(array $fields = [])
@@ -47,18 +53,16 @@ class Shopier
         $diff = array_diff_key($this->buyerFields(), $this->buyer);
 
         if (count($diff) > 0)
-            throw new Exception(implode(',', array_keys($diff)) . ' fields are required use "setBuyer()" method ');
+            throw new \Exception(implode(',', array_keys($diff)) . ' fields are required use "setBuyer()" method ');
 
-        $diff = array_diff_key($this->orderBillingFields(), $this->buyer);
-
-        if (count($diff) > 0)
-            throw new Exception(implode(',', array_keys($diff)) . ' fields are required use "setOrderBilling()" method ');
 
         $diff = array_diff_key($this->orderShippingFields(), $this->buyer);
 
         if (count($diff) > 0)
-            throw new Exception(implode(',', array_keys($diff)) . ' fields are required use "setOrderShipping()" method ');
+            throw new \Exception(implode(',', array_keys($diff)) . ' fields are required use "setOrderShipping()" method ');
 
+
+        $billingAddress = $this->getBillingAddress();
 
         $args = array(
             'API_key' => $this->api_key,
@@ -72,10 +76,10 @@ class Shopier
             'buyer_account_age' => 0,
             'buyer_id_nr' => $this->buyer['id'],
             'buyer_phone' => $this->buyer['phone'],
-            'billing_address' => $this->buyer['billing_address'],
-            'billing_city' => $this->buyer['billing_city'],
-            'billing_country' => $this->buyer['billing_country'],
-            'billing_postcode' => $this->buyer['billing_postcode'],
+            'billing_address' => $billingAddress->getAddress(),
+            'billing_city' => $billingAddress->getCity(),
+            'billing_country' => $billingAddress->getCountry(),
+            'billing_postcode' => $billingAddress->getPostcode(),
             'shipping_address' => $this->buyer['shipping_address'],
             'shipping_city' => $this->buyer['shipping_city'],
             'shipping_country' => $this->buyer['shipping_country'],
@@ -134,6 +138,7 @@ class Shopier
     {
 
         $form = $this->generateForm($order_id, $order_total, $callback_url);
+
 
         return '<!doctype html>
              <html lang="en">
@@ -230,11 +235,7 @@ class Shopier
 
     private function getCurrency()
     {
-        $currencyList = [
-            'TRY' => 0,
-            'USD' => 1,
-            'EUR' => 2,
-        ];
+        $currencyList = ['TRY' => 0, 'USD' => 1, 'EUR' => 2];
         return $currencyList[strtoupper($this->currency)] ?? 0;
     }
 
