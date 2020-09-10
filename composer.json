@@ -1,0 +1,20 @@
+{
+  "name": "canavci2016/shopier",
+  "authors": [
+    {
+      "name": "Can Avci",
+      "email": "canavci2016@gmail.com"
+    }
+  ],
+  "require": {
+    "guzzlehttp/guzzle": "^7.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "CanAvci\\Shopier\\": "src"
+    }
+  },
+  "support": {
+    "email": "canavci2016@gmail.com"
+  }
+}
