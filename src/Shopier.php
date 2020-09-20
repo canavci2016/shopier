@@ -89,7 +89,7 @@ class Shopier
             'currency' => $this->getCurrency(),
             'platform' => 0,
             'is_in_frame' => 0,
-            'current_language' => $this->lang(),
+            'current_language' => 0, // 0:TR,1:other languages ,
             'modul_version' => $this->module_version,
             'random_nr' => rand(100000, 999999)
         ];
@@ -131,17 +131,6 @@ class Shopier
     {
         $currencyList = ['TRY' => 0, 'USD' => 1, 'EUR' => 2];
         return $currencyList[strtoupper($this->currency)] ?? 0;
-    }
-
-    private function lang()
-    {
-        $current_language = "tr-TR";
-        $current_lan = 1;
-        if ($current_language == "tr-TR") {
-            $current_lan = 0;
-        }
-
-        return $current_lan;
     }
 
 }
